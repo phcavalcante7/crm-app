@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Logs
+npm-debug.log
+*.log
+
+# Environment variables
+.env
+**/.env
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.history/
+
+# Prisma
+/server/prisma/
+!/server/prisma/schema.prisma # Keep the schema file
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Other common files
+coverage/
+.nyc_output/
+.cache/
+.eslintcache
+.prettierignore
