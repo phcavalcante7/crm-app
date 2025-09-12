@@ -1,0 +1,97 @@
+// database/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql" // ou o que você estava usando
+  url      = env("DATABASE_URL")
+}
+
+model ADMINISTRADORA {
+  id        Int     @id @default(autoincrement())
+  nome      String  @db.VarChar(255)
+  cnpj      String? @unique @db.VarChar(18)
+  site      String? @db.VarChar(255)
+  anotacoes String? @db.Text
+
+  // Relacionamentos
+  grupos GRUPO[]
+
+  @@map("administradora")
+}
+
+model GRUPO {
+  id                    Int       @id @default(autoincrement())
+  id_administradora     Int
+  de_lance_embutido     Decimal?  @db.Decimal(5, 2)
+  classe                String?   @db.VarChar(100)
+  tipo_de_lance         String?   @db.VarChar(50)
+  data_inicio           DateTime? @db.Date
+  data_final_prevista   DateTime? @db.Date
+  num_max_cotas         Int?
+
+  // Relacionamentos
+  administradora ADMINISTRADORA @relation(fields: [id_administradora], references: [id])
+  cotas          COTA[]
+
+  @@map("grupo")
+}
+
+model CLIENTE {
+  codigo      Int     @id @default(autoincrement())
+  tipo_pessoa String? @db.VarChar(50)
+  nome        String  @db.VarChar(255)
+  cpf_cnpj    String? @unique @db.VarChar(18)
+  renda       Decimal? @db.Decimal(15, 2)
+  telefone    String? @db.VarChar(20)
+  email       String? @db.VarChar(255)
+  tags        String? @db.Text
+  anotacoes   String? @db.Text
+
+  // Relacionamentos
+  cotas COTA[]
+
+  @@map("cliente")
+}
+
+model COTA {
+  id                    Int       @id @default(autoincrement())
+  id_cliente            Int
+  id_grupo              Int
+  numero_cota           Int?
+  valor_total_cota      Decimal?  @db.Decimal(15, 2)
+  data_adesao           DateTime? @db.Date
+  status                String?   @db.VarChar(50)
+  data_contemplacao     DateTime? @db.Date
+  valor_ofertado        Decimal?  @db.Decimal(15, 2)
+  saldo_devedor         Decimal?  @db.Decimal(15, 2)
+  num_parcelas_pagas    Int?      @default(0)
+  total_parcelas        Int?
+  valor_parcela_atual   Decimal?  @db.Decimal(15, 2)
+  assessor_responsavel  String?   @db.VarChar(255)
+  estrategia            String?   @db.Text
+
+  // Relacionamentos
+  cliente    CLIENTE     @relation(fields: [id_cliente], references: [codigo])
+  grupo      GRUPO       @relation(fields: [id_grupo], references: [id])
+  pagamentos PAGAMENTO[]
+
+  @@map("cota")
+}
+
+model PAGAMENTO {
+  id              Int      @id @default(autoincrement())
+  id_cota         Int
+  data_pagamento  DateTime @db.Date
+  valor           Decimal  @db.Decimal(15, 2)
+  num_parcela     Int
+  forma_pagamento String?  @db.VarChar(100)
+  status          String?  @db.VarChar(50)
+
+  // Relacionamentos
+  cota COTA @relation(fields: [id_cota], references: [id])
+
+  @@map("pagamento")
+}
