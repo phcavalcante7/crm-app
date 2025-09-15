@@ -32,11 +32,6 @@ Thumbs.db
 /server/prisma/
 !/server/prisma/schema.prisma # Keep the schema file
 
-# Package managers
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # Other common files
 coverage/
 .nyc_output/
